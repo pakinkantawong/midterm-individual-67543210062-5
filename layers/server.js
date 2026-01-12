@@ -18,5 +18,7 @@ app.use(errorHandler);
 // Start server
 const PORT = 3000;
 app.listen(PORT, () => {
-    console.log(`Library Management System running on http://localhost:${PORT}`);
+    console.log(`\n🚀 เซฟเวอร์เปิดเรียบร้อยแล้ว`);
+    console.log(`📖 Library Management System running on http://localhost:${PORT}`);
+    console.log(`✅ พร้อมให้ใช้งาน\n`);
 });
