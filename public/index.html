@@ -3,47 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Library Management - Layered</title>
+    <title>📚 Library Management System</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <span class="logo-icon">📚</span>
+                <span class="logo-text">Library Management</span>
+            </div>
+            <div class="navbar-info">
+                <span class="system-time" id="current-time"></span>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
-        <header>
-            <h1>📚 Library Management System</h1>
-            <span class="badge">🏗️ Layered Architecture</span>
+        <!-- Header Section -->
+        <header class="main-header">
+            <div class="header-content">
+                <div>
+                    <h1>📚 Library Management System</h1>
+                    <p class="subtitle">Manage your book collection efficiently</p>
+                </div>
+                <button class="btn btn-primary btn-lg" id="add-btn">
+                    <span class="btn-icon">➕</span> Add New Book
+                </button>
+            </div>
         </header>
         
-        <div class="toolbar">
-            <button class="btn btn-primary" id="add-btn">
-                ➕ Add New Book
-            </button>
+        <!-- Statistics Dashboard -->
+        <section class="dashboard">
+            <div class="stat-card stat-total">
+                <div class="stat-icon">📊</div>
+                <div class="stat-content">
+                    <h3 id="stat-total">0</h3>
+                    <p>Total Books</p>
+                </div>
+            </div>
+            <div class="stat-card stat-available">
+                <div class="stat-icon">✅</div>
+                <div class="stat-content">
+                    <h3 id="stat-available">0</h3>
+                    <p>Available</p>
+                </div>
+            </div>
+            <div class="stat-card stat-borrowed">
+                <div class="stat-icon">📤</div>
+                <div class="stat-content">
+                    <h3 id="stat-borrowed">0</h3>
+                    <p>Borrowed</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Toolbar Section -->
+        <section class="toolbar-section">
+            <div class="search-box">
+                <input type="text" id="search-input" class="search-input" placeholder="🔍 Search by title or author...">
+            </div>
             
-            <div class="filters">
-                <button class="filter-btn active" data-filter="all">All Books</button>
-                <button class="filter-btn" data-filter="available">Available</button>
-                <button class="filter-btn" data-filter="borrowed">Borrowed</button>
+            <div class="filter-group">
+                <span class="filter-label">Filter:</span>
+                <button class="filter-btn active" data-filter="all">📚 All Books</button>
+                <button class="filter-btn" data-filter="available">✅ Available</button>
+                <button class="filter-btn" data-filter="borrowed">📤 Borrowed</button>
             </div>
+        </section>
+
+        <!-- Loading State -->
+        <div id="loading" class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading books...</p>
         </div>
         
-        <div class="statistics">
-            <div class="stat-card">
-                <h3 id="stat-available">0</h3>
-                <p>Available</p>
-            </div>
-            <div class="stat-card">
-                <h3 id="stat-borrowed">0</h3>
-                <p>Borrowed</p>
-            </div>
-            <div class="stat-card">
-                <h3 id="stat-total">0</h3>
-                <p>Total Books</p>
-            </div>
+        <!-- Book List -->
+        <section class="books-section">
+            <div id="book-list" class="book-grid"></div>
+        </section>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <div class="empty-icon">📭</div>
+            <h2>No books found</h2>
+            <p>Start by adding your first book to the library</p>
         </div>
-        
-        <div id="loading" class="loading">Loading books...</div>
-        
-        <div id="book-list" class="book-grid"></div>
     </div>
+    
+    <!-- Book Modal -->
+    <div id="book-modal" class="modal">
+        <div class="modal-content modal-book">
+            <div class="modal-header">
+                <h2 id="modal-title">📖 Add New Book</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="book-form">
+                    <input type="hidden" id="book-id">
+                    
+                    <div class="form-group">
+                        <label for="title">Book Title <span class="required">*</span></label>
+                        <input type="text" id="title" class="form-input" placeholder="Enter book title" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="author">Author <span class="required">*</span></label>
+                        <input type="text" id="author" class="form-input" placeholder="Enter author name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="isbn">ISBN <span class="required">*</span></label>
+                        <input type="text" id="isbn" class="form-input" placeholder="Enter ISBN number" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select id="status" class="form-input">
+                            <option value="available">Available</option>
+                            <option value="borrowed">Borrowed</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">💾 Save Book</button>
+                        <button type="button" class="btn btn-secondary" id="cancel-btn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+    
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
     
     <!-- Modal -->
     <div id="book-modal" class="modal">
