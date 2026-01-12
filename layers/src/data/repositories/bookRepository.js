@@ -39,12 +39,18 @@ class BookRepository {
             
             db.run(sql, [title, author, isbn], function(err) {
                 if (err) {
+                    console.error('❌ เพิ่มหนังสือ ล้มเหลว:', err.message);
                     reject(err);
                 } else {
                     // Return the created book
                     db.get('SELECT * FROM books WHERE id = ?', [this.lastID], (err, row) => {
-                        if (err) reject(err);
-                        else resolve(row);
+                        if (err) {
+                            console.error('❌ เพิ่มหนังสือ ล้มเหลว:', err.message);
+                            reject(err);
+                        } else {
+                            console.log(`✅ เพิ่มหนังสือ: "${title}" (ID: ${row.id})`);
+                            resolve(row);
+                        }
                     });
                 }
             });
@@ -60,12 +66,18 @@ class BookRepository {
             
             db.run(sql, [title, author, isbn, id], function(err) {
                 if (err) {
+                    console.error(`❌ แก้ไขหนังสือ ID ${id} ล้มเหลว:`, err.message);
                     reject(err);
                 } else {
                     // Return updated book
                     db.get('SELECT * FROM books WHERE id = ?', [id], (err, row) => {
-                        if (err) reject(err);
-                        else resolve(row);
+                        if (err) {
+                            console.error(`❌ แก้ไขหนังสือ ID ${id} ล้มเหลว:`, err.message);
+                            reject(err);
+                        } else {
+                            console.log(`✏️  แก้ไขหนังสือ: "${title}" (ID: ${id})`);
+                            resolve(row);
+                        }
                     });
                 }
             });
@@ -79,12 +91,19 @@ class BookRepository {
                 [status, id], 
                 function(err) {
                     if (err) {
+                        console.error(`❌ เปลี่ยนสถานะ ID ${id} ล้มเหลว:`, err.message);
                         reject(err);
                     } else {
                         // Return updated book
                         db.get('SELECT * FROM books WHERE id = ?', [id], (err, row) => {
-                            if (err) reject(err);
-                            else resolve(row);
+                            if (err) {
+                                console.error(`❌ เปลี่ยนสถานะ ID ${id} ล้มเหลว:`, err.message);
+                                reject(err);
+                            } else {
+                                const statusLabel = status === 'borrowed' ? '📚 ยืมแล้ว' : '✨ คืนแล้ว';
+                                console.log(`${statusLabel} เปลี่ยนสถานะ: "${row.title}" (ID: ${id})`);
+                                resolve(row);
+                            }
                         });
                     }
                 }
@@ -95,9 +114,24 @@ class BookRepository {
     // TODO: Implement delete
     async delete(id) {
         return new Promise((resolve, reject) => {
-            db.run('DELETE FROM books WHERE id = ?', [id], function(err) {
-                if (err) reject(err);
-                else resolve({ message: 'Book deleted successfully' });
+            // ดึงชื่อหนังสือก่อนลบ
+            db.get('SELECT title FROM books WHERE id = ?', [id], (err, row) => {
+                if (err) {
+                    console.error(`❌ ลบหนังสือ ID ${id} ล้มเหลว:`, err.message);
+                    reject(err);
+                } else if (!row) {
+                    reject(new Error('Book not found'));
+                } else {
+                    db.run('DELETE FROM books WHERE id = ?', [id], function(err) {
+                        if (err) {
+                            console.error(`❌ ลบหนังสือ ID ${id} ล้มเหลว:`, err.message);
+                            reject(err);
+                        } else {
+                            console.log(`🗑️  ลบหนังสือ: "${row.title}" (ID: ${id})`);
+                            resolve({ message: 'Book deleted successfully' });
+                        }
+                    });
+                }
             });
         });
     }
