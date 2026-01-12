@@ -96,10 +96,6 @@ class BookService {
             throw new NotFoundError(`Book with ID ${id} not found`);
         }
 
-        if (book.status === 'borrowed') {
-            throw new ConflictError('Cannot delete a borrowed book');
-        }
-
         const result = await bookRepository.delete(validatedId);
         return result;
     }

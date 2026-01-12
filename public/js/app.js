@@ -30,7 +30,7 @@ async function loadBooks(status = null) {
         
         const data = await api.getAllBooks(status);
         
-        displayBooks(data.books);
+        displayBooks(data.data);
         updateStatistics(data.statistics);
         
         hideLoading();
@@ -149,7 +149,8 @@ async function handleSubmit(event) {
 // Edit book
 async function editBook(id) {
     try {
-        const book = await api.getBookById(id);
+        const response = await api.getBookById(id);
+        const book = response.data;
         
         document.getElementById('modal-title').textContent = 'Edit Book';
         document.getElementById('book-id').value = book.id;

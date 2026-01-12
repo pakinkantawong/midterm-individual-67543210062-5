@@ -13,5 +13,16 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.11"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pakinkantawong/midterm-individual-67543210062-5.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pakinkantawong/midterm-individual-67543210062-5/issues"
+  },
+  "homepage": "https://github.com/pakinkantawong/midterm-individual-67543210062-5#readme"
 }
