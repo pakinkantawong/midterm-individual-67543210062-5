@@ -1,57 +1,107 @@
 // src/business/services/bookService.js
 const bookRepository = require('../../data/repositories/bookRepository');
 const bookValidator = require('../validators/bookValidator');
+const { ValidationError, NotFoundError, ConflictError } = require('../../presentation/errors/customErrors');
 
 class BookService {
-    // TODO: Implement getAllBooks
     async getAllBooks(status = null) {
-        // 1. ถ้ามี status ให้ validate
-        // 2. เรียก bookRepository.findAll(status)
-        // 3. คำนวณสถิติ (available, borrowed, total)
-        // 4. return { books, statistics }
+        if (status) {
+            const validStatuses = ['available', 'borrowed'];
+            if (!validStatuses.includes(status)) {
+                throw new ValidationError(`Invalid status. Must be one of: ${validStatuses.join(', ')}`);
+            }
+        }
+
+        const books = await bookRepository.findAll(status);
+        
+        const statistics = {
+            total: books.length,
+            available: books.filter(b => b.status === 'available').length,
+            borrowed: books.filter(b => b.status === 'borrowed').length
+        };
+
+        return { books, statistics };
     }
 
-    // TODO: Implement getBookById
     async getBookById(id) {
-        // 1. Validate ID
-        // 2. เรียก repository
-        // 3. ถ้าไม่เจอ throw NotFoundError
-        // 4. return book
+        const validatedId = bookValidator.validateId(id);
+        const book = await bookRepository.findById(validatedId);
+        
+        if (!book) {
+            throw new NotFoundError(`Book with ID ${id} not found`);
+        }
+
+        return book;
     }
 
-    // TODO: Implement createBook
     async createBook(bookData) {
-        // 1. Validate book data
-        // 2. Validate ISBN format
-        // 3. เรียก repository.create()
-        // 4. return created book
+        bookValidator.validateBookData(bookData);
+        bookValidator.validateISBN(bookData.isbn);
+        
+        const createdBook = await bookRepository.create(bookData);
+        return createdBook;
     }
 
-    // TODO: Implement updateBook
     async updateBook(id, bookData) {
-        // ให้นักศึกษาเขียนเอง
+        const validatedId = bookValidator.validateId(id);
+        bookValidator.validateBookData(bookData);
+        bookValidator.validateISBN(bookData.isbn);
+
+        const book = await bookRepository.findById(validatedId);
+        if (!book) {
+            throw new NotFoundError(`Book with ID ${id} not found`);
+        }
+
+        const updatedBook = await bookRepository.update(validatedId, bookData);
+        return updatedBook;
     }
 
-    // TODO: Implement borrowBook
     async borrowBook(id) {
-        // 1. ดึงหนังสือจาก repository
-        // 2. ตรวจสอบว่า status = 'available' หรือไม่
-        // 3. ถ้า borrowed อยู่แล้ว throw error
-        // 4. เรียก repository.updateStatus(id, 'borrowed')
-        // 5. return updated book
+        const validatedId = bookValidator.validateId(id);
+        const book = await bookRepository.findById(validatedId);
+        
+        if (!book) {
+            throw new NotFoundError(`Book with ID ${id} not found`);
+        }
+
+        if (book.status === 'borrowed') {
+            throw new ConflictError('Book is already borrowed');
+        }
+
+        const updatedBook = await bookRepository.updateStatus(validatedId, 'borrowed');
+        return updatedBook;
     }
 
-    // TODO: Implement returnBook
     async returnBook(id) {
-        // ให้นักศึกษาเขียนเอง (คล้ายกับ borrowBook)
+        const validatedId = bookValidator.validateId(id);
+        const book = await bookRepository.findById(validatedId);
+        
+        if (!book) {
+            throw new NotFoundError(`Book with ID ${id} not found`);
+        }
+
+        if (book.status === 'available') {
+            throw new ConflictError('Book is already available');
+        }
+
+        const updatedBook = await bookRepository.updateStatus(validatedId, 'available');
+        return updatedBook;
     }
 
-    // TODO: Implement deleteBook
     async deleteBook(id) {
-        // 1. ดึงหนังสือจาก repository
-        // 2. ตรวจสอบว่า status ไม่ใช่ 'borrowed'
-        // 3. ถ้า borrowed ห้ามลบ throw error
-        // 4. เรียก repository.delete(id)
+        const validatedId = bookValidator.validateId(id);
+        const book = await bookRepository.findById(validatedId);
+        
+        if (!book) {
+            throw new NotFoundError(`Book with ID ${id} not found`);
+        }
+
+        if (book.status === 'borrowed') {
+            throw new ConflictError('Cannot delete a borrowed book');
+        }
+
+        const result = await bookRepository.delete(validatedId);
+        return result;
     }
 }
 

@@ -2,45 +2,109 @@
 const bookService = require('../../business/services/bookService');
 
 class BookController {
-    // TODO: Implement getAllBooks
     async getAllBooks(req, res, next) {
         try {
             const { status } = req.query;
-            // เรียก bookService.getAllBooks()
-            // ส่ง response กลับ
+            const result = await bookService.getAllBooks(status);
+            
+            res.status(200).json({
+                success: true,
+                data: result.books,
+                statistics: result.statistics
+            });
         } catch (error) {
             next(error);
         }
     }
 
-    // TODO: Implement getBookById
     async getBookById(req, res, next) {
-        // ให้นักศึกษาเขียนเอง
+        try {
+            const { id } = req.params;
+            const book = await bookService.getBookById(id);
+            
+            res.status(200).json({
+                success: true,
+                data: book
+            });
+        } catch (error) {
+            next(error);
+        }
     }
 
-    // TODO: Implement createBook
     async createBook(req, res, next) {
-        // ให้นักศึกษาเขียนเอง
+        try {
+            const bookData = req.body;
+            const createdBook = await bookService.createBook(bookData);
+            
+            res.status(201).json({
+                success: true,
+                message: 'Book created successfully',
+                data: createdBook
+            });
+        } catch (error) {
+            next(error);
+        }
     }
 
-    // TODO: Implement updateBook
     async updateBook(req, res, next) {
-        // ให้นักศึกษาเขียนเอง
+        try {
+            const { id } = req.params;
+            const bookData = req.body;
+            const updatedBook = await bookService.updateBook(id, bookData);
+            
+            res.status(200).json({
+                success: true,
+                message: 'Book updated successfully',
+                data: updatedBook
+            });
+        } catch (error) {
+            next(error);
+        }
     }
 
-    // TODO: Implement borrowBook
     async borrowBook(req, res, next) {
-        // ให้นักศึกษาเขียนเอง
+        try {
+            const { id } = req.params;
+            const updatedBook = await bookService.borrowBook(id);
+            
+            res.status(200).json({
+                success: true,
+                message: 'Book borrowed successfully',
+                data: updatedBook
+            });
+        } catch (error) {
+            next(error);
+        }
     }
 
-    // TODO: Implement returnBook
     async returnBook(req, res, next) {
-        // ให้นักศึกษาเขียนเอง
+        try {
+            const { id } = req.params;
+            const updatedBook = await bookService.returnBook(id);
+            
+            res.status(200).json({
+                success: true,
+                message: 'Book returned successfully',
+                data: updatedBook
+            });
+        } catch (error) {
+            next(error);
+        }
     }
 
-    // TODO: Implement deleteBook
     async deleteBook(req, res, next) {
-        // ให้นักศึกษาเขียนเอง
+        try {
+            const { id } = req.params;
+            const result = await bookService.deleteBook(id);
+            
+            res.status(200).json({
+                success: true,
+                message: 'Book deleted successfully',
+                data: result
+            });
+        } catch (error) {
+            next(error);
+        }
     }
 }
 
