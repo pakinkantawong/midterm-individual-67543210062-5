@@ -1,8 +1,8 @@
 # Library Management System - Layered Architecture
 
 ## 📋 Project Information
-- **Student Name:** [นายภาคิน กันทะวงค์]
-- **Student ID:** [67543210062-5]
+- **Student Name:** นายภาคิน กันทะวงค์
+- **Student ID:** 67543210062-5
 - **Course:** ENGSE207 Software Architecture
 
 ## 🏗️ Architecture Style
